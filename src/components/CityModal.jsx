@@ -5,7 +5,7 @@ export default function CityModal({ city, onClose }) {
 
   const addToList = () => {
     const stored = JSON.parse(localStorage.getItem("cities") || "[]");
-    const newId = Date.now();
+    const newId = Date.now().toLocaleString("de-DE");
     const newCity = { ...city, id: newId };
     localStorage.setItem("cities", JSON.stringify([...stored, newCity]));
     onClose();

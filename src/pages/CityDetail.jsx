@@ -12,12 +12,19 @@ export default function CityDetail() {
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("cities") || "[]");
-    const found = stored.find(c => String(c.id) === id);
+    const found = stored.find((c) => String(c.id) === id);
     if (found) {
       setCity(found);
       fetchUnsplashImages(found.city, 8).then(setPhotos);
     }
   }, [id]);
+
+  const deleteEntry = () => {
+    const stored = JSON.parse(localStorage.getItem("cities") || "[]");
+    const updated = stored.filter((c) => String(c.id) !== id);
+    localStorage.setItem("cities", JSON.stringify(updated));
+    navigate("/"); 
+  };
 
   if (!city) {
     return <div className="p-6">Stadt nicht gefunden.</div>;
@@ -25,10 +32,9 @@ export default function CityDetail() {
 
   return (
     <div className="p-6 flex flex-col items-center gap-6">
-      {/* Stadtname oben zentriert */}
+      
       <h1 className="text-3xl font-bold mb-4 text-center">{city.city}</h1>
 
-      {/* Fotos Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-4 w-full max-w-4xl">
         {photos.map((url, idx) => (
           <img
@@ -41,7 +47,6 @@ export default function CityDetail() {
         ))}
       </div>
 
-      {/* Karte */}
       <div className="w-full max-w-4xl h-96 rounded overflow-hidden shadow-lg">
         <MapContainer
           center={[city.lat, city.lon]}
@@ -58,20 +63,26 @@ export default function CityDetail() {
         </MapContainer>
       </div>
 
-      {/* Button zur Startseite */}
-      <button
-        className="mb-4 px-3 py-1 bg-black text-white rounded text-sm hover:bg-gray-800"
-        onClick={() => navigate("/")}
-      >
-        Zur Startseite
-      </button>
+      <div className="flex gap-4">
+        <button
+          className="px-3 py-1 bg-black text-white rounded text-sm hover:bg-gray-800"
+          onClick={() => navigate("/")}
+        >
+          Zur Startseite
+        </button>
+        <button
+          className="px-3 py-1 bg-black text-white rounded text-sm hover:bg-gray-800"
+          onClick={deleteEntry}
+        >
+          Datensatz löschen
+        </button>
+      </div>
 
-      {/* Modal für Foto */}
       {modalPhoto && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-90 overflow-auto pointer-events-auto">
           <div className="relative p-4">
             <button
-              className="absolute top-4 right-4 text-red-500 text-xl font-bold z-[1001]"
+              className="absolute top-4 right-4 text-gray-200 text-xl font-bold z-[1001]"
               onClick={() => setModalPhoto(null)}
             >
               Schließen

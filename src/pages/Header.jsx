@@ -26,7 +26,6 @@ const Header = () => {
 
   return (
     <>
-      {/* Header im Weiß-Schwarz Style mit Abstand zu den Fensterrändern */}
       <header
         className={`relative flex flex-col justify-start items-center text-black rounded-2xl shadow-lg mb-12 bg-white transition-all duration-500 mx-6 md:mx-12`}
         style={{
@@ -43,7 +42,6 @@ const Header = () => {
             Weltstädte-App
           </h1>
 
-          {/* Suchfeld */}
           <input
             type="text"
             value={query}
@@ -53,7 +51,6 @@ const Header = () => {
           />
         </div>
 
-        {/* City-Grid innerhalb des Headers */}
         {cities.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4 w-full px-4 md:px-6">
             {cities.map((city, idx) => (
@@ -76,7 +73,6 @@ const Header = () => {
         )}
       </header>
 
-      {/* Modal */}
       {modalCity && (
         <CityModal city={modalCity} onClose={() => setModalCity(null)} />
       )}
