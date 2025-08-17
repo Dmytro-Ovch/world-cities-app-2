@@ -1,11 +1,21 @@
-import { useState } from "react";
-import { searchCities } from "../api";
+import { useState, useEffect } from "react";
+import { searchCities, fetchIpInfo, fixEncoding } from "../api";
 import CityModal from "../components/CityModal";
 
 const Header = () => {
   const [query, setQuery] = useState("");
   const [cities, setCities] = useState([]);
   const [modalCity, setModalCity] = useState(null);
+  const [ipInfo, setIpInfo] = useState(null);
+  const regionNames = new Intl.DisplayNames(['de'], { type: 'region' });
+
+  useEffect(() => {
+    async function loadIpInfo() {
+      const info = await fetchIpInfo();
+      setIpInfo(info);
+    }
+    loadIpInfo();
+  }, []);
 
   const handleSearch = async (e) => {
     const q = e.target.value;
@@ -42,6 +52,13 @@ const Header = () => {
             Weltstädte-App
           </h1>
 
+          {ipInfo && (
+            <p className="mt-2 text-sm text-gray-600">
+              Ihre IP: {ipInfo.ip} – Standort: {fixEncoding(ipInfo.city?.name)},{" "}
+              {regionNames.of(ipInfo.country?.iso_code)}
+            </p>
+          )}
+
           <input
             type="text"
             value={query}
@@ -62,7 +79,7 @@ const Header = () => {
                 <h2 className="font-bold">{renderValue(city.city)}</h2>
                 <p>Land: {renderValue(city.country)}</p>
                 <p>Bundesstaat: {renderValue(city.state || city.region)}</p>
-                <p>County: {renderValue(city.county)}</p>
+                <p>Region: {renderValue(city.county)}</p>
                 <p>Postleitzahl: {renderValue(city.postcode)}</p>
                 <p>Ländercode: {renderValue(city.country_code)}</p>
                 <p>Längengrad: {renderValue(city.lon)}</p>
